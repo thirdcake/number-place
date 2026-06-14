@@ -1,0 +1,10 @@
+button[data-digit] {
+    margin:0;
+    padding:0;
+    width: 32px;
+    height: 32px;
+}
+button[data-digit] > svg {
+    width: 100%;
+    height: auto;
+}

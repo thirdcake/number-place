@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>test index</title>
+    <script defer src="/dist/numpre.js"></script>
+    <link rel="stylesheet" href="/css/custom.css"/>
+</head>
+<body>
+    <h1>test</h1>
+    <div id="main"></div>
+    <script>
+    const numpre = document.createElement('numpre-play');
+    const params = new URL(document.location).searchParams;
+    numpre.given = params.get('g');
+    console.log(numpre.given);
+    document.getElementById('main').appendChild(numpre);
+    </script>
+</body>
+</html>

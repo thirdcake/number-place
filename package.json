@@ -1,0 +1,8 @@
+{
+  "devDependencies": {
+    "esbuild": "0.28.1"
+  },
+  "scripts": {
+    "build": "esbuild src/main.ts --bundle --outfile=dist/numpre.js --minify --target=esnext"
+  }
+}
