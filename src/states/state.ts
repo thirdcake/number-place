@@ -1,105 +1,37 @@
-import { Digits } from './digits.ts';
-import { Backgrounds } from './backgrounds.ts';
-import { History } from './history.ts';
-import { Focus } from './focus.ts';
-import { Options } from './options.ts';
+import { Digits } from "./digits";
+import { Focus } from "./focus";
 
 export class State {
-    #digits: Digits = new Digits();
-    #backgrounds: Backgrounds = new Backgrounds();
-    #history: History = new History();
-    #focus: Focus = new Focus();
-    #options: Options = new Options();
+    #isShowMode = false;  // show mode の場合、一切の state 更新をしない
+    digits = new Digits();
+    focus = new Focus();
 
-    init(given: unknown, entry: unknown):void {
-        this.#digits.init(given, entry);
-    }
-    
-    get digits():Digits { return this.#digits }
-    get backgrounds(): Backgrounds { return this.#backgrounds }
-    get history(): History { return this.#history }
-    get focus(): Focus { return this.#focus }
-    get options(): Options { return this.#options }
-    
-    clickCell(index: number): void {
-        if(this.#options.isCellFirst) {
-            this.#focus.cursor = index;
-            this.#backgrounds.highlightNumber(this.#digits, this.#focus);
-        }else{
-            if(this.#options.isPen) {
-            }else{
-            }
+    init(dataset: DOMStringMap): void {
+        // layout に tenkey が無ければ show mode
+        this.#isShowMode = dataset.tenkey === undefined;
+
+        if(dataset.given !== undefined) {
         }
+    }
+    blur(): void {
+        if(this.#isShowMode) return;
+    }
+    clickCell(index: number): void {
+        if(this.#isShowMode) return;
     }
     clickNum(digit: number): void {
-        if(this.#options.isNumFirst) {
-            this.#backgrounds.highlightNumber(this.#digits, this.#focus);
-        }else {
-            if(this.#options.isPen) {
-                this.inputNumber(digit);
-            }else{
-                this.inputCandidate(digit);
-            }
-        }
+        if(this.#isShowMode) return;
     }
-
     clickOpt(option: string): void {
-        switch(option) {
-            case 'undo':
-                const undo = this.#history.undo();
-                if(!undo) return;
-                this.#digits.setBit(undo.index, undo.prev);
-                break;
-            case 'redo':
-                const redo = this.#history.redo();
-                if(!redo) return;
-                this.#digits.setBit(redo.index, redo.next);
-                break;
-            case 'pen-mode':
-                this.#options.togglePenMode();
-                break;
-            case 'first-mode':
-                this.#options.toggleFirstMode();
-                break;
-        }
+        if(this.#isShowMode) return;
     }
-
     moveFocus(key: string): void {
-        switch (key) {
-            case 'ArrowUp':
-                this.#focus.up();
-                break;
-            case 'ArrowDown':
-                this.#focus.down();
-                break;
-            case 'ArrowLeft':
-                this.#focus.left();
-                break;
-            case 'ArrowRight':
-                this.#focus.right();
-                break;
-        }
+        if(this.#isShowMode) return;
     }
-
-    inputCandidate(int: number): void {
-        const index = this.#focus.cursor;
-        if(!index) return;
-        const prev = this.#digits.getBit(index);
-        this.#digits.toggleCandidate(index, int);
-        const next = this.#digits.getBit(index);
-        if(prev !== next) {
-            this.#history.save(index, prev, next);
-        }
+    inputCandidate(digit: number): void {
+        if(this.#isShowMode) return;
     }
-
-    inputNumber(int: number): void {
-        const index = this.#focus.cursor;
-        if(!index) return;
-        const prev = this.#digits.getBit(index);
-        this.#digits.setEntry(index, int);
-        const next = this.#digits.getBit(index);
-        if(prev !== next) {
-            this.#history.save(index, prev, next);
-        }
+    inputNumber(digit: number): void {
+        if(this.#isShowMode) return;
     }
 }
