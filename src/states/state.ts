@@ -1,44 +1,17 @@
 import { Digits } from "./digits";
 import { Focus } from "./focus";
 import { History } from "./history";
+import { Options } from "./options";
 
 export class State {
-    #isShowMode = false;  // show mode の場合、一切 state 更新しない
+    isProcessing = false;  // 処理中かどうか
+    mode: 'show'|'make'|'play' = 'play';
+
     digits = new Digits();
     focus = new Focus();
     history = new History();
+    options = new Options();
 
-    init(dataset: DOMStringMap): void {
-        // layout に tenkey が無ければ show mode
-        this.#isShowMode = dataset.tenkey === undefined;
-
-        if(dataset.entry !== undefined) {
-            this.digits.entry = dataset.entry;
-        }else if(dataset.given !== undefined) {
-            this.digits.given = dataset.given;
-        }
-    }
-    blur(): void {
-        if(this.#isShowMode) return;
-    }
-    clickCell(index: number): void {
-        if(this.#isShowMode) return;
-    }
-    clickNum(digit: number): void {
-        if(this.#isShowMode) return;
-    }
-    clickOpt(option: string): void {
-        if(this.#isShowMode) return;
-    }
-    moveFocus(key: string): void {
-        if(this.#isShowMode) return;
-    }
-    inputCandidate(digit: number): void {
-        if(this.#isShowMode) return;
-    }
-    inputNumber(digit: number): void {
-        if(this.#isShowMode) return;
-    }
     isOptionButtonDisabled(option: string): boolean {
         let enabled = false;
         switch(option) {
@@ -73,4 +46,5 @@ export class State {
         }
         return !enabled;  // disabled なので反転させる
     }
+
 }
