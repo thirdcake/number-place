@@ -1,10 +1,12 @@
 import { Digits } from "./digits";
 import { Focus } from "./focus";
+import { History } from "./history";
 
 export class State {
     #isShowMode = false;  // show mode の場合、一切 state 更新しない
     digits = new Digits();
     focus = new Focus();
+    history = new History();
 
     init(dataset: DOMStringMap): void {
         // layout に tenkey が無ければ show mode
@@ -38,30 +40,37 @@ export class State {
         if(this.#isShowMode) return;
     }
     isOptionButtonDisabled(option: string): boolean {
+        let enabled = false;
         switch(option) {
             // 常に click 可能
             case 'delete':
             case 'check':
             case 'save':
-                return false;
+                enabled = true;
+                break;
             // 状況によりけり
             case 'undo':
-                // return !this.#history.canUndo;
+                enabled = this.history.canUndo;
+                break;
             case 'redo':
-                // return !this.#history.canRedo;
+                enabled = this.history.canRedo;
+                break;
             case 'load':
-                // return this.???.hasSaveData;
+                // enabled = this.???.hasSaveData; break;
             case 'pen':
-                // return !this.#focus.penMode;
+                // enabled = this.focus.penMode; break;
             case 'pencil':
-                // return this.#focus.penMode;
+                // enabled = this.focus.penMode; break;
             case 'cell_first':
-                // return !this.#cellFirst;
+                enabled = this.focus.isCellFirst;
+                break;
             case 'num_first':
-                // return this.#cellFirst;
+                enabled = !this.focus.isCellFirst;
+                break;
             // 指定したもの以外はすべて disabled
             default:
-                return true;
+                break;
         }
+        return !enabled;  // disabled なので反転させる
     }
 }

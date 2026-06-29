@@ -1,5 +1,5 @@
 export class Digit {
-    #bit: number;
+    #bit: number = 0;
     /**
      * this.#bit は、11bitで管理する
      * 上2桁はtypeで、下9桁がcandidatesのbitもしくはint(0,1,2,...9)
@@ -85,7 +85,7 @@ export class Digit {
     get hex(): string {
         return this.#bit.toString(16).padStart(3, '0');
     }
-    
+
 }
 
 export class Digits {
@@ -109,6 +109,8 @@ export class Digits {
 
         return [...rows, ...cols, ...blocks];
     }
+
+    // 初期化
     set given(given_string: string) {
         if(/^[0-9]{81}$/.test(given_string)) {
             given_string.split('').forEach((s, i) => {
@@ -123,4 +125,21 @@ export class Digits {
             }
         }
     }
+
+    // stringify
+    get given(): string {
+        return (this.#digits
+            .map(digit => (digit.type === 'given') ? digit.given : 0)
+            .join(''));
+    }
+    get entry(): string {
+        return this.#digits.map(digit => digit.hex).join('');
+    }
+
+    // getter
+    get groups(): Digit[][] {
+        return this.#groups.map(g => g.map(i => this.#digits[i]));
+    }
+    get digits(): Digit[] { return this.#digits }
+
 }
